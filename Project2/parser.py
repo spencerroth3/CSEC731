@@ -1,6 +1,7 @@
 """
 CSEC 731: Project B
 Author: Spencer Roth
+Date: 2/4/2022
 
 parser.py   This program functions as a parser for the HTTP protocol
 """
