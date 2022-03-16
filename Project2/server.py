@@ -95,6 +95,9 @@ def handle_php(r):
         env_vars['CONTENT_LENGTH'] = r.headers['Content-Length']
 
     php_cgi = shutil.which('php-cgi')
+
+    if not php_cgi:
+        raise Exception
     proc = subprocess.Popen(php_cgi, env=env_vars, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     if r.method == 'POST':
@@ -303,7 +306,6 @@ def main():
             client_conn, client_addr = l_socket.accept()
             print("[+] Connection received from ", client_addr)
             request_data = client_conn.recv(1024)
-            print(request_data)
             req = request_data.decode('utf-8')
             handle(req, client_conn)
         except KeyboardInterrupt:
