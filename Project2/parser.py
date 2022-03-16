@@ -11,6 +11,7 @@ import sys
 SUPPORTED_METHODS = {"GET", "POST", "PUT", "DELETE", "CONNECT", "HEAD"}
 SUPPORTED_VERSIONS = {"HTTP/1.0", "HTTP/1.1", "HTTP/2.0"}
 
+# Request object
 class RequestHTTP:
     def __init__(self, method, path, version):
         self.method = method
@@ -21,6 +22,10 @@ class RequestHTTP:
 
 def parse_request(req):
     """
+    This function is used to parse an HTTP request into 3 parts: request line, list of headers, and body
+
+    @param req: raw HTTP request string
+    @return r: parsed HTTP request as a python object
     """
     request_line = req[0].split(" ")
     req = req[1:]
@@ -46,6 +51,8 @@ def parse_request(req):
 def get_request(path):
     """
     Takes a file path as an argument and returns a python list of the lines of data within the file 
+    @param path: File path
+    @return Raw HTTP request to be parsed
     """
     with open(path) as f:
         return f.readlines()
