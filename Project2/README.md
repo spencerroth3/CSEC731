@@ -17,6 +17,4 @@ Note: if a self-signed cert is used for the server, certificate verification wil
 
 All valid requests will be logged in `server.log`
 
-When a resource ending in `.php` is requested, the request data will be passed to php-cgi and the output will be returned in the request. PHP-cgi needs to be installed on the host which the server is running on. On Ubuntu, it can be installed as follows: 
-
-`apt install php-cgi`
+When a resource ending in `.php` is requested, the request data will be passed to php-cgi and the output will be returned in the request. PHP-cgi needs to be installed on the host which the server is running on. On Ubuntu, it can be installed as follows: `apt install php-cgi`
