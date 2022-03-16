@@ -214,7 +214,6 @@ def handle(req, client_conn):
     http_response = ""
 
     try:
-        print(req)
         r = parse_request(req)
     except:
         http_response = "HTTP/1.1 " + '400 ' + STATUS_CODES[400] + "\r\n" + "Connection: Closed\r\n\r\n"
@@ -239,7 +238,6 @@ def handle(req, client_conn):
         except: 
             http_response = "HTTP/1.1 " + '500 ' + STATUS_CODES[500] + "\r\n" + "Connection: Closed\r\n\r\n" 
 
-    print(http_response.encode('utf-8'))
     client_conn.sendall(http_response.encode('utf-8')) 
     client_conn.close()
 
@@ -268,15 +266,18 @@ def main():
     
     l_socket.listen(1)
     
-    print('Listening for connections...')
+    print('[*] Listening for connections...')
    
     while True:
         try:
             client_conn, client_addr = l_socket.accept()
+            print("[+] Connection received from ", client_addr)
             request_data = client_conn.recv(1024)
             req = request_data.decode('utf-8')
-            print(req)
             handle(req, client_conn)
+        except KeyboardInterrupt:
+            print('[*] Shutting down server...')
+            exit(1)
         except:
             pass
 main()
