@@ -29,6 +29,7 @@ STATUS_CODES = {
     505: 'HTTP Version Not Supported'
 }
 
+# Request object
 class RequestHTTP:
     def __init__(self, method, path, version):
         self.method = method
@@ -40,6 +41,10 @@ class RequestHTTP:
 
 def parse_request(req):
     """
+    This function is used to parse an HTTP request into 3 parts: request line, list of headers, and body
+
+    @param req: raw HTTP request string
+    @return r: parsed HTTP request as a python object
     """
     req = req.split("\r\n")
     request_line = req[0].split(" ")
@@ -67,7 +72,9 @@ def parse_request(req):
 
 def handle_php(r):
     """
-    Return output of PHP script
+    Takes in a request object that requests a .php resource and passes data to CGI script. Returns output of PHP script in the response body.
+    @param r: request object
+    @return php-cgi script output
     """
     env_vars = os.environ.copy()
     env_vars['REQUEST_METHOD'] = r.method
@@ -100,11 +107,17 @@ def handle_php(r):
 
 
 def handle_get(r):
+    """
+    Handler for a GET request
+    @param r: request object
+    @return http_response: response string to send back to the client
+    """
     try:
         resource = open(r.path[1:], "r")
         data = resource.read()
         resource.close()
 
+        # If php resource is requested, pass data to CGI script
         if '.php' in r.path:
             data = handle_php(r)
 
@@ -131,6 +144,11 @@ def handle_get(r):
 
 
 def handle_post(r):
+    """
+    Handler for a POST request
+    @param r: request object
+    @return http_response: response string to send back to the client
+    """
     try:
         #Check for proper Content-Length Header
         if int(r.headers['Content-Length']) != len(r.body):
@@ -157,6 +175,11 @@ def handle_post(r):
         return "HTTP/1.1 " + '500 ' + STATUS_CODES[500] + "\r\n" + "Connection: Closed\r\n\r\n"
 
 def handle_put(r):
+    """
+    Handler for a PUT request
+    @param r: request object
+    @return http_response: response string to send back to the client
+    """
     try:
         #Check for proper Content-Length Header
         if int(r.headers['Content-Length']) != len(r.body):
@@ -187,6 +210,11 @@ def handle_put(r):
         return "HTTP/1.1 " + '500 ' + STATUS_CODES[500] + "\r\n" + "Connection: Closed\r\n\r\n"
 
 def handle_delete(r):
+    """
+    Handler for a DELETE request
+    @param r: request object
+    @return http_response: response string to send back to the client
+    """
     try:
         os.remove(r.path[1:])
         http_response =  "HTTP/1.1 " + '200 ' + STATUS_CODES[200] + "\r\n" 
@@ -209,7 +237,9 @@ def handle_delete(r):
 
 def handle(req, client_conn):
     """
-    Handles Request
+    Handles Client request
+    @param req: Raw HTTP request string
+    @param client_conn: Client socket stream
     """
     http_response = ""
 
@@ -273,6 +303,7 @@ def main():
             client_conn, client_addr = l_socket.accept()
             print("[+] Connection received from ", client_addr)
             request_data = client_conn.recv(1024)
+            print(request_data)
             req = request_data.decode('utf-8')
             handle(req, client_conn)
         except KeyboardInterrupt:
