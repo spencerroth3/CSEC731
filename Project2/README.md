@@ -15,3 +15,4 @@ optional arguments:
 ```
 Note: if a self-signed cert is used for the server, certificate verification will need to be turned off by the client. For example, if using `curl` you will need to add the `-k` flag. 
 
+All valid requests will be logged in `server.log`
