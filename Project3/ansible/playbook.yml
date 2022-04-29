@@ -22,9 +22,7 @@
         state: present
 
     - name: Add Docker Repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
+      shell: echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     - name: Update apt and install required packages
       apt:
@@ -38,9 +36,14 @@
         state: latest
         update_cache: true
 
-   - name: Clone Git Repo
-        git:
-          repo: https://github.com/sqlite/sqlite.git
-          dest: ~/roth-project3/
-          clone: yes
-          update: yes
+    - name: Clone Git Repo
+      git:
+        repo: https://github.com/spencerroth3/CSEC731.git
+        dest: ~/roth-731/
+        clone: yes
+        update: yes
+
+    - name: Launch containers
+      shell: docker-compose up -d  
+      args:
+        chdir:  ~/roth-731/Project3/docker
